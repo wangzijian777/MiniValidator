@@ -19,16 +19,16 @@ new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
 
 1. 用来给对象进行注解的Annotation及其解析器和校验器
 
-
 * Annotation ,一组注解 
 * Parser, 注解解析器，主要处理注解的行为 
 * AnnotationValidator 使用注解和解析器对传入的对象的字段进行校验
-2. 可扩展的校验器 
 
+2. 可扩展的校验器 
 
 * AnnotationRule 注解校验rule,作为内置的rule使用 
 * Rule 用于扩展，可以自定义Rule 
 * Validator 使用Rule对数据进行校验，或者使用内置的校验器
+
 ##如何调用
 ###使用注解进行校验：
 一个待校验的类：
