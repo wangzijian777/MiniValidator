@@ -15,11 +15,12 @@ new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
 要方便客户端程序方便的创建自定义校验器
 
 ##整体框架
-![image](https://raw.githubusercontent.com/wangzijian777/MiniValidator/master/pic/struts.png)
-1. 用来给对象进行注解的Annotation及其解析器和校验器 
+![image](https://raw.githubusercontent.com/wangzijian777/MiniValidator/master/pic/struts.png) 
+
+1. 用来给对象进行注解的Annotation及其解析器和校验器
 * Annotation ,一组注解 
 * Parser, 注解解析器，主要处理注解的行为 
-* AnnotationValidator 使用注解和解析器对传入的对象的字段进行校验 
+* AnnotationValidator 使用注解和解析器对传入的对象的字段进行校验
 2. 可扩展的校验器 
 * AnnotationRule 注解校验rule,作为内置的rule使用 
 * Rule 用于扩展，可以自定义Rule 
