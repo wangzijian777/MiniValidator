@@ -15,6 +15,7 @@ new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
 要方便客户端程序方便的创建自定义校验器
 
 ##整体框架
+![image](https://raw.githubusercontent.com/wangzijian777/MiniValidator/master/content/pic/struts.png)
 
 ##如何调用
 
