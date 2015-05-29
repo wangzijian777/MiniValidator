@@ -16,9 +16,16 @@ new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
 
 ##整体框架
 ![image](https://raw.githubusercontent.com/wangzijian777/MiniValidator/master/pic/struts.png)
-
+1. 用来给对象进行注解的Annotation及其解析器和校验器 
+* Annotation ,一组注解 
+* Parser, 注解解析器，主要处理注解的行为 
+* AnnotationValidator 使用注解和解析器对传入的对象的字段进行校验 
+2. 可扩展的校验器 
+* AnnotationRule 注解校验rule,作为内置的rule使用 
+* Rule 用于扩展，可以自定义Rule 
+* Validator 使用Rule对数据进行校验，或者使用内置的校验器
 ##如何调用
-使用注解进行校验：
+###使用注解进行校验：
 一个待校验的类：
 ```Java
 class User{
@@ -77,7 +84,7 @@ public class TestAnnotationValidator {
 }
 ```
 
-使用通用校验器：
+###使用通用校验器：
 ```Java
 public class TestValidator {
     public static void main(String[] args) {
@@ -95,3 +102,102 @@ public class TestValidator {
 }
 ```
 ##如何扩展
+###扩展注解：
+* 添加一个注解：
+```java
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DateFormat {
+    public String fieldName();
+    public String format();
+}
+```
+* 添加解析器
+```Java
+/**
+ * 日期格式注解解析器
+ * 
+ * @author cdwangzijian
+ *
+ */
+public class DateFormatParser implements IAnnotationParser{
+    /**
+     * 校验f字段的值是否符合value的日期格式
+     * @see DateFormat
+     */
+    @Override
+    public ValidateResult validate(Field f, Object value) {
+        ValidateResult result = new ValidateResult();
+        if(f.isAnnotationPresent(DateFormat.class)){
+            DateFormat dateFormat = f.getAnnotation(DateFormat.class);
+            try {
+                if(value != null){
+                    SimpleDateFormat format = new SimpleDateFormat(dateFormat.format());
+                    format.parse(value.toString());
+                }
+            } catch (ParseException e) {
+                result.setMessage(dateFormat.fieldName() + "不满足格式：" + dateFormat.format());
+            }   
+        }
+        return result;
+    }
+}
+```
+* 使用新解析器的测试程序：
+```Java
+public class TestAnnotationValidator {
+    public static void main(String[] args) {
+        User user = new User();
+        user.setName("wzj");
+        user.setAge(21);
+        user.setBirthday("20150525");
+        AnnotationValidator.register(new DateFormatParser());
+        ValidateResult result = AnnotationValidator.validate(user);
+        if(result.isValid()){
+            System.out.println("校验通过");
+        }else{
+            System.out.println(result.getMessage());
+        }
+    }
+}
+```
+
+###扩展通用校验器
+* 自定义一个Rule
+
+```Java
+/**
+ * 使用AnnotationValidator的校验规则
+ * 
+ * @see AnnotationValidator
+ * @author cdwangzijian
+ *
+ */
+public class AnnotationRule implements Rule{
+    private String message;
+    private Object o;
+
+    public AnnotationRule(Object o) {
+        this.o = o;
+    }
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public boolean isValid() {
+        ValidateResult result = AnnotationValidator.validate(this.o);
+        this.message = result.getMessage();
+        return result.isValid();
+    }
+}
+```
+* 使用这个Rule
+```Java
+public class TestValidator {
+    public static void main(String[] args) {
+        new Validator().validate(new AnnotationRule(new User()));
+    }
+}
+```
