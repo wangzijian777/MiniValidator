@@ -6,7 +6,9 @@
 只是作为一个小的工具包，代码最多几K，无依赖也是必须的吧 
   * 要优雅  
 if.else的调用方式太难看了。看看如下的这种怎么样：  
-`new Validator().notNull(name, "姓名").notNull(mail, "邮箱");`
+```Java
+new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
+```
   * 要易用  
 注解是易用的一个好办法，就像JSR303那样
   * 要可扩展  
