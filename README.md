@@ -18,5 +18,80 @@ new Validator().notNull(name, "姓名").notNull(mail, "邮箱");
 ![image](https://raw.githubusercontent.com/wangzijian777/MiniValidator/master/pic/struts.png)
 
 ##如何调用
+使用注解进行校验：
+一个待校验的类：
+```Java
+class User{
+    private Long id;
+    @NotBlank(fieldName="姓名")
+    private String name;
+    @Less(fieldName="年龄", value=100)
+    private int age;
 
+    private String phone;
+    private String birthday;
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getBirthday() {
+        return birthday;
+    }
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+}
+```
+校验测试代码：
+```Java
+public class TestAnnotationValidator {
+    public static void main(String[] args) {
+        User user = new User();
+        ValidateResult result = AnnotationValidator.validate(user);
+        if(result.isValid()){
+            System.out.println("校验通过");
+        }else{
+            System.out.println(result.getMessage());
+        }
+    }
+}
+```
+
+使用通用校验器：
+```Java
+public class TestValidator {
+    public static void main(String[] args) {
+        testMethod("name", null, null, null);
+    }
+
+    public static void testMethod(String name, String mail, String thirdOrderId, String address){
+        Validator v = new Validator().notNull(name, "姓名").notNull(mail, "邮箱").notNull(address, "地址");
+        if(v.isValid()){
+            System.out.println("校验通过");
+        }else{
+            System.out.println(v.getMessage());
+        }
+    }
+}
+```
 ##如何扩展
